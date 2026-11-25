@@ -1,0 +1,25 @@
+# Docker 构建上下文瘦身：不要把宿主机依赖、运行数据、密钥带进镜像
+data/
+it-docs-api/target/**
+it-docs-web/node_modules/
+it-docs-web/dist/
+it-docs-web/.vite/
+**/node_modules
+**/dist
+**/target/**
+# 离线 app 镜像需要这个 jar；普通在线构建不会 COPY 它，只是多 60MB 上下文
+!it-docs-api/target/it-docs.jar
+.idea/
+.vscode/
+.git/
+.env
+.env.*
+*.log
+docs/
+**/*.md
+sql/
+kb-migrate.py
+run-*.bat
+*.zip
+*.tgz
+.DS_Store

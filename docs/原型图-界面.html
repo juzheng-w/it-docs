@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>IT部知识共享服务平台 · 原型图-界面</title>
+<style>
+:root{
+  --blue:#409eff;--blue-l:#ecf5ff;--green:#67c23a;--green-l:#f0f9eb;
+  --orange:#e6a23c;--orange-l:#fdf6ec;--red:#f56c6c;--red-l:#fef0f0;
+  --ink:#303133;--ink2:#606266;--ink3:#909399;--ink4:#c0c4cc;
+  --line:#e4e7ed;--line2:#ebeef5;--bg:#f5f7fa;--nav:#304156;--nav2:#3d4b5c;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;background:var(--bg);color:var(--ink);font-size:14px;line-height:1.65;
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Helvetica Neue",Arial,sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:var(--blue);text-decoration:none}
+code{font-family:Consolas,Monaco,"Courier New",monospace;font-size:.9em;background:#f2f4f7;color:#b34a6b;
+  padding:1px 5px;border-radius:3px;word-break:break-all}
+
+/* ============ 左侧目录 ============ */
+.toc{
+  position:fixed;top:0;left:0;bottom:0;width:246px;background:#fff;border-right:1px solid var(--line);
+  display:flex;flex-direction:column;overflow-y:auto;z-index:20;
+}
+.toc-hd{padding:22px 20px 16px;border-bottom:1px solid var(--line2)}
+.toc-hd .k{font-size:11px;letter-spacing:.12em;color:var(--ink3);text-transform:uppercase}
+.toc-hd .t{font-size:14px;font-weight:600;margin-top:4px;line-height:1.45}
+.toc-hd .v{margin-top:8px;display:flex;gap:6px;flex-wrap:wrap}
+.toc-hd .v span{font-size:10px;padding:2px 7px;border-radius:20px;background:var(--bg);color:var(--ink2)}
+.toc-nav{padding:10px 10px 24px}
+.toc-nav .g{font-size:10px;color:var(--ink4);letter-spacing:.1em;padding:12px 10px 6px}
+.toc-nav a{
+  display:flex;align-items:center;gap:9px;padding:7px 10px;border-radius:6px;color:var(--ink2);
+  font-size:12.5px;line-height:1.4;transition:background .15s,color .15s;
+}
+.toc-nav a .n{font-size:10px;color:var(--ink4);font-variant-numeric:tabular-nums;min-width:16px}
+.toc-nav a:hover{background:#f7f9fc;color:var(--ink)}
+.toc-nav a.on{background:var(--blue-l);color:var(--blue);font-weight:500}
+.toc-nav a.on .n{color:var(--blue)}
+.toc-ft{margin-top:auto;padding:14px 20px 20px;font-size:11px;color:var(--ink4);border-top:1px solid var(--line2)}
+
+/* ============ 主区 ============ */
+.main{margin-left:246px;padding:40px 48px 90px;max-width:1080px}
+.page-hd{margin-bottom:34px}
+.page-hd h1{font-size:26px;font-weight:600;margin:0 0 8px;letter-spacing:-.01em}
+.page-hd .sub{font-size:13.5px;color:var(--ink2);max-width:720px}
+.tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.tags span{font-size:11px;padding:3px 10px;border-radius:20px;background:#fff;border:1px solid var(--line);color:var(--ink2)}
+.tags span.b{background:var(--blue-l);border-color:#d3e8ff;color:var(--blue)}
+
+h2.sec{font-size:17px;font-weight:600;margin:0;letter-spacing:-.005em}
+section{scroll-margin-top:24px;margin-bottom:52px}
+.sec-hd{display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap}
+.sec-hd .no{
+  font-size:11px;font-weight:600;color:var(--blue);background:var(--blue-l);
+  width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex:none;
+}
+.sec-hd .bd{margin-left:auto}
+.badge{font-size:10.5px;padding:2px 9px;border-radius:20px;background:#fff;border:1px solid var(--line);color:var(--ink3)}
+.badge.b{background:var(--blue-l);border-color:#d3e8ff;color:var(--blue)}
+.badge.g{background:var(--green-l);border-color:#e1f3d8;color:var(--green)}
+.badge.o{background:var(--orange-l);border-color:#faecd8;color:var(--orange)}
+.note{font-size:13px;color:var(--ink2);margin:6px 0 16px;line-height:1.75}
+
+/* 浏览器样机框 */
+.frame{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff;
+  box-shadow:0 1px 2px rgba(16,24,40,.04),0 12px 28px -18px rgba(16,24,40,.22)}
+.frame-bar{height:34px;background:#f7f8fa;border-bottom:1px solid var(--line2);display:flex;align-items:center;gap:6px;padding:0 12px}
+.frame-bar i{width:8px;height:8px;border-radius:50%;background:#dfe3e8;display:block}
+.frame-bar .url{
+  margin-left:10px;flex:1;max-width:420px;background:#fff;border:1px solid var(--line2);border-radius:20px;
+  height:20px;display:flex;align-items:center;padding:0 10px;font-size:10.5px;color:var(--ink3);
+  font-family:Consolas,Monaco,monospace;overflow:hidden;white-space:nowrap;
+}
+.frame-bar .rt{margin-left:auto;font-size:10.5px;color:var(--ink4)}
+
+/* ============ 页面内组件（原样保留，仅去边框） ============ */
+.screen{background:#fff}
+.bar{height:44px;background:var(--nav);display:flex;align-items:center;padding:0 16px;gap:14px}
+.bar .brand{color:#fff;font-size:13px;font-weight:500;white-space:nowrap}
+.bar .search{flex:0 0 260px;background:var(--nav2);border-radius:4px;height:26px;display:flex;align-items:center;padding:0 9px;font-size:11px;color:#a3b1c2}
+.bar .sp{flex:1}
+.bar .lnk{color:#a3b1c2;font-size:12px}
+.btn{background:var(--blue);color:#fff;font-size:11px;padding:3px 10px;border-radius:4px;display:inline-block;line-height:1.7}
+.btn.green{background:var(--green)}
+.btn.plain{background:#fff;color:var(--ink);border:1px solid #dcdfe6}
+.hero{background:linear-gradient(135deg,#409eff,#2f86e0);padding:18px 20px;text-align:center;color:#fff}
+.hero .t{font-size:15px;font-weight:500;letter-spacing:.01em}
+.hero .st{display:flex;justify-content:center;gap:26px;margin-top:10px;font-size:11px;color:#dcecfc}
+.hero .st b{color:#fff;font-size:14px;display:block;font-weight:600}
+.body{display:flex;min-height:250px}
+.side{width:184px;border-right:1px solid var(--line);padding:12px;background:#fafbfc;flex:none}
+.side .lab{font-size:10.5px;color:var(--ink3);margin-bottom:7px;letter-spacing:.02em}
+.side .it{font-size:12px;padding:5px 8px;border-radius:4px;margin-bottom:3px;color:var(--ink2)}
+.side .it.on{background:var(--blue-l);color:var(--blue);font-weight:500}
+.main-in{flex:1;padding:12px 16px;min-width:0}
+.crumb{font-size:11px;color:var(--ink3);margin-bottom:9px}
+.crumb b{color:var(--ink);font-weight:500}
+.card{border:1px solid var(--line);border-radius:8px;padding:11px 13px;margin-bottom:8px;background:#fff}
+.card .hd{display:flex;align-items:center;gap:6px;margin-bottom:6px;flex-wrap:wrap}
+.tag{font-size:10px;padding:1px 7px;border-radius:3px;display:inline-block;line-height:1.7}
+.tag.blue{background:var(--blue-l);color:var(--blue)}
+.tag.green{background:var(--green-l);color:var(--green)}
+.tag.orange{background:var(--orange-l);color:var(--orange)}
+.card .q{font-size:13px;font-weight:500}
+.card .a{font-size:12px;color:var(--ink2);margin-bottom:7px}
+.card .meta{display:flex;gap:12px;font-size:10.5px;color:var(--ink4);flex-wrap:wrap}
+.menu{width:152px;background:var(--nav);padding:12px 0;flex:none}
+.menu .mb{color:#bfcbd9;font-size:12px;padding:7px 16px}
+.menu .mb.on{background:var(--blue);color:#fff}
+.menu .mt{color:#fff;font-size:12.5px;font-weight:500;padding:2px 16px 12px}
+.menu .sep{border-top:1px solid var(--nav2);margin-top:10px;padding-top:14px}
+.topbar{height:38px;border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 16px;gap:8px;background:#fff}
+.topbar .bc{font-size:11.5px;color:var(--ink3)}
+.avatar{width:22px;height:22px;border-radius:50%;background:var(--blue);color:#fff;font-size:10px;display:flex;align-items:center;justify-content:center}
+.stats{display:flex;gap:10px;padding:14px 16px}
+.stat{flex:1;border-radius:8px;padding:10px 12px}
+.stat .l{font-size:10.5px;color:var(--ink2);opacity:.85}
+.stat .v{font-size:21px;font-weight:600;line-height:1.3}
+.stat.b{background:var(--blue-l)}.stat.b .v{color:var(--blue)}
+.stat.g{background:var(--green-l)}.stat.g .v{color:var(--green)}
+.stat.o{background:var(--orange-l)}.stat.o .v{color:var(--orange)}
+.stat.r{background:var(--red-l)}.stat.r .v{color:var(--red)}
+.tbl{width:100%;border-collapse:collapse;font-size:11px;table-layout:fixed}
+.tbl th{background:#fafbfc;color:var(--ink3);text-align:left;padding:7px 9px;font-weight:400;font-size:10.5px}
+.tbl td{border-top:1px solid var(--line2);padding:7px 9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink2)}
+.tbl td:first-child{color:var(--ink);font-family:Consolas,Monaco,monospace;font-size:10.5px}
+.tbl .op a{color:var(--blue);margin-right:7px;font-size:10.5px}
+.tbl .op a.d{color:var(--red)}
+.pager{display:flex;justify-content:flex-end;gap:4px;margin-top:10px;font-size:11px;color:var(--ink3)}
+.pager span{border:1px solid var(--line);border-radius:3px;padding:2px 8px;background:#fff}
+.pager .on{background:var(--blue);color:#fff;border-color:var(--blue)}
+.login{max-width:352px;margin:0 auto;border:1px solid var(--line);border-radius:12px;padding:26px 30px;background:#fff;
+  box-shadow:0 2px 4px rgba(16,24,40,.03),0 18px 40px -26px rgba(16,24,40,.28)}
+.fld{border:1px solid #dcdfe6;border-radius:4px;padding:8px 11px;font-size:12px;color:var(--ink4);margin-bottom:12px;background:#fff}
+.tip{background:#f7f8fa;border-left:3px solid var(--blue);border-radius:4px;padding:11px 15px;font-size:12.5px;color:var(--ink2);line-height:1.8}
+.editor{display:flex;min-height:230px}
+.code{font-family:Consolas,Monaco,"Courier New",monospace;font-size:11px;line-height:1.8}
+.warn{background:var(--orange-l);border-left:3px solid var(--orange);padding:6px 11px;border-radius:4px;font-size:11px;margin:6px 0;color:#8a5a12}
+.statusbar{height:30px;background:#fafbfc;border-top:1px solid var(--line);display:flex;align-items:center;padding:0 16px;gap:16px;font-size:10.5px;color:var(--ink3)}
+.aclrow{display:flex;align-items:center;gap:9px;font-size:12px;padding:9px 12px;border:1px solid var(--line2);border-radius:7px;margin-bottom:7px;flex-wrap:wrap}
+.phone{width:300px;border:8px solid #1f2937;border-radius:34px;overflow:hidden;background:var(--bg);margin:0 auto;
+  box-shadow:0 18px 40px -18px rgba(16,24,40,.45)}
+.phone .st{height:26px;background:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 15px;font-size:10px;color:var(--ink3)}
+.phone .mbar{background:#fff;padding:8px 12px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--line2)}
+.phone .mhero{background:linear-gradient(135deg,#409eff,#2f86e0);padding:11px 12px;display:flex;align-items:center;gap:10px}
+.chips{display:flex;gap:6px;padding:0 12px;overflow:hidden}
+.chip{font-size:11px;padding:4px 10px;border-radius:12px;background:#f5f7fa;color:var(--ink2);white-space:nowrap}
+.chip.on{background:var(--blue);color:#fff}
+.chip.sm{font-size:10px;padding:2px 8px;border-radius:10px}
+.mcard{background:#fff;border-radius:8px;padding:9px 10px;margin-bottom:7px;box-shadow:0 1px 2px rgba(16,24,40,.05)}
+.mtab{height:46px;background:#fff;border-top:1px solid var(--line2);display:flex;align-items:center;font-size:10px;text-align:center}
+.mtab div{flex:1;color:var(--ink3)}
+.mtab div.on{color:var(--blue)}
+
+/* ============ 概览与规范 ============ */
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.gcard{background:#fff;border:1px solid var(--line);border-radius:10px;padding:13px 14px;display:block;color:inherit;transition:border-color .15s,box-shadow .15s,transform .15s}
+.gcard:hover{border-color:#bcdcff;box-shadow:0 8px 20px -14px rgba(64,158,255,.6);transform:translateY(-1px)}
+.gcard .n{font-size:10px;color:var(--blue);font-variant-numeric:tabular-nums;letter-spacing:.06em}
+.gcard .t{font-size:13px;font-weight:600;margin:3px 0 4px}
+.gcard .d{font-size:11.5px;color:var(--ink3);line-height:1.55}
+.spec{display:grid;grid-template-columns:1.15fr 1fr;gap:12px}
+.panel{background:#fff;border:1px solid var(--line);border-radius:10px;padding:15px 17px}
+.panel h3{font-size:12px;font-weight:600;margin:0 0 12px;color:var(--ink2);letter-spacing:.02em}
+.sw{display:flex;gap:8px;flex-wrap:wrap}
+.sw div{flex:1 1 0;min-width:76px;max-width:118px}
+.sw i{display:block;height:34px;border-radius:6px;margin-bottom:5px;border:1px solid rgba(0,0,0,.05)}
+.sw .n{font-size:10.5px;color:var(--ink2);font-family:Consolas,Monaco,monospace}
+.sw .u{font-size:10px;color:var(--ink4)}
+.ts{display:flex;flex-direction:column;gap:8px}
+.ts div{display:flex;align-items:baseline;gap:10px;border-bottom:1px dashed var(--line2);padding-bottom:7px}
+.ts div:last-child{border:0;padding-bottom:0}
+.ts .s{font-size:10px;color:var(--ink4);font-family:Consolas,Monaco,monospace;min-width:52px}
+.ts .p{color:var(--ink)}
+ul.plain{margin:0;padding-left:18px;font-size:12.5px;color:var(--ink2);line-height:1.9}
+ul.plain li::marker{color:var(--ink4)}
+ul.plain b{color:var(--ink);font-weight:500}
+.mob{display:grid;grid-template-columns:320px 1fr;gap:22px;align-items:start}
+
+/* ============ 响应式 ============ */
+@media (max-width:1120px){
+  .toc{transform:translateX(-100%);transition:transform .2s}
+  .toc.open{transform:none;box-shadow:0 0 40px rgba(0,0,0,.14)}
+  .main{margin-left:0;padding:28px 20px 70px}
+  .grid{grid-template-columns:repeat(2,1fr)}
+  .spec{grid-template-columns:1fr}
+  .mob{grid-template-columns:1fr}
+}
+@media (max-width:720px){
+  .grid{grid-template-columns:1fr}
+  .body{flex-direction:column}
+  .side{width:100%;border-right:0;border-bottom:1px solid var(--line)}
+  .menu{width:100%}
+  .page-hd h1{font-size:21px}
+}
+@media print{
+  .toc,.frame-bar,.hamb{display:none}
+  .main{margin:0;padding:0;max-width:none}
+  .frame{box-shadow:none;break-inside:avoid}
+  section{break-inside:avoid}
+}
+.hamb{display:none;position:fixed;left:14px;bottom:16px;z-index:30;width:44px;height:44px;border-radius:50%;
+  background:var(--nav);color:#fff;border:0;font-size:17px;cursor:pointer;box-shadow:0 8px 20px -8px rgba(0,0,0,.5)}
+@media (max-width:1120px){.hamb{display:block}}
+</style>
+</head>
+<body>
+
+<nav class="toc" id="toc">
+  <div class="toc-hd">
+    <div class="k">Prototype</div>
+    <div class="t">IT部知识共享服务平台<br>原型图 · 界面说明</div>
+    <div class="v"><span>v1.1</span><span>9 屏</span><span>2026-11-12</span></div>
+  </div>
+  <div class="toc-nav">
+    <div class="g">概览</div>
+    <a href="#s0" class="on"><span class="n">00</span>页面清单与设计规范</a>
+    <div class="g">查阅端（免登录）</div>
+    <a href="#s1"><span class="n">01</span>查阅端首页</a>
+    <a href="#s8"><span class="n">08</span>移动版首页</a>
+    <div class="g">登录</div>
+    <a href="#s2"><span class="n">02</span>登录页（双通道）</a>
+    <div class="g">管理端（登录后）</div>
+    <a href="#s3"><span class="n">03</span>管理工作台</a>
+    <a href="#s4"><span class="n">04</span>文档阅读页</a>
+    <a href="#s5"><span class="n">05</span>Markdown 编辑页</a>
+    <a href="#s6"><span class="n">06</span>空间与权限管理</a>
+    <a href="#s7"><span class="n">07</span>成员管理</a>
+    <a href="#s9"><span class="n">09</span>操作日志</a>
+    <div class="g">附录</div>
+    <a href="#a1"><span class="n">A</span>移动端适配要点</a>
+    <a href="#a2"><span class="n">B</span>设计口径备忘</a>
+  </div>
+  <div class="toc-ft">Vue 3 + Element Plus<br>Spring Boot 2.7 / Java 8 / MySQL 8</div>
+</nav>
+
+<main class="main">
+  <div class="page-hd">
+    <h1>IT部知识共享服务平台 · 原型图-界面</h1>
+    <div class="sub">面向系统工程师的界面说明书：每屏给出路由、布局口径与关键交互，配色与组件沿用 Element Plus 规范。开发时按屏对照实现，样式不另起炉灶。</div>
+    <div class="tags">
+      <span class="b">Vue 3 + Element Plus</span>
+      <span>9 屏</span>
+      <span>桌面端 + 移动端</span>
+      <span>v1.1 · 2026-11-12</span>
+    </div>
+  </div>
+
+  <!-- ================= 00 概览 ================= -->
+  <section id="s0">
+    <div class="sec-hd"><span class="no">00</span><h2 class="sec">页面清单与设计规范</h2><span class="bd badge">先看这屏</span></div>
+    <p class="note">9 屏覆盖三条链路：查阅（免登录）、登录、管理。移动端只做查阅，管理端仅桌面。</p>
+
+    <div class="grid">
+      <a class="gcard" href="#s1"><div class="n">01 / PORTAL</div><div class="t">查阅端首页</div><div class="d">免登录 · 两级筛选 · 模糊搜索</div></a>
+      <a class="gcard" href="#s2"><div class="n">02 / LOGIN</div><div class="t">登录页</div><div class="d">域账号 / 本地账号双 tab</div></a>
+      <a class="gcard" href="#s3"><div class="n">03 / CONSOLE</div><div class="t">管理工作台</div><div class="d">卡片与文档统一列表 · 软删除</div></a>
+      <a class="gcard" href="#s4"><div class="n">04 / READ</div><div class="t">文档阅读页</div><div class="d">Markdown 渲染 · 目录 · 版本回滚</div></a>
+      <a class="gcard" href="#s5"><div class="n">05 / EDIT</div><div class="t">Markdown 编辑页</div><div class="d">左编右预 · 粘贴传文件 · 版本快照</div></a>
+      <a class="gcard" href="#s6"><div class="n">06 / SPACE</div><div class="t">空间与权限</div><div class="d">ACL 映射 LDAP 域组</div></a>
+      <a class="gcard" href="#s7"><div class="n">07 / MEMBER</div><div class="t">成员管理</div><div class="d">LDAP 自动建档 · 本地账号创建</div></a>
+      <a class="gcard" href="#s8"><div class="n">08 / MOBILE</div><div class="t">移动版首页</div><div class="d">纯只读 · chip 筛选 · 底部 tab</div></a>
+      <a class="gcard" href="#s9"><div class="n">09 / LOG</div><div class="t">操作日志</div><div class="d">改前改后值 · 可追溯</div></a>
+    </div>
+
+    <div class="spec" style="margin-top:14px">
+      <div class="panel">
+        <h3>配色（Element Plus 语义色）</h3>
+        <div class="sw">
+          <div><i style="background:#409eff"></i><div class="n">#409EFF</div><div class="u">主色 / 链接 / 选中</div></div>
+          <div><i style="background:#67c23a"></i><div class="n">#67C23A</div><div class="u">成功 / 已解决</div></div>
+          <div><i style="background:#e6a23c"></i><div class="n">#E6A23C</div><div class="u">警告 / 待补充</div></div>
+          <div><i style="background:#f56c6c"></i><div class="n">#F56C6C</div><div class="u">危险 / 删除</div></div>
+          <div><i style="background:#304156"></i><div class="n">#304156</div><div class="u">导航深色</div></div>
+          <div><i style="background:#f5f7fa;border-color:#e4e7ed"></i><div class="n">#F5F7FA</div><div class="u">页面底色</div></div>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>字号层级与圆角</h3>
+        <div class="ts">
+          <div><span class="s">26 / 600</span><span class="p" style="font-size:20px;font-weight:600">页面主标题</span></div>
+          <div><span class="s">17 / 600</span><span class="p" style="font-size:16px;font-weight:600">区块标题</span></div>
+          <div><span class="s">14 / 400</span><span class="p">正文内容</span></div>
+          <div><span class="s">12 / 400</span><span class="p" style="font-size:12px">表格、卡片辅助信息</span></div>
+          <div><span class="s">10.5</span><span class="p" style="font-size:11px;color:#909399">标签、元信息、页脚</span></div>
+        </div>
+        <div style="font-size:11.5px;color:#909399;margin-top:10px;line-height:1.8">
+          圆角：按钮/输入 4px · 卡片 8px · 容器 12px · 标签 999px<br>
+          间距：8 的倍数（8 / 12 / 16 / 24 / 32），不写零散像素
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 01 查阅端 ================= -->
+  <section id="s1">
+    <div class="sec-hd"><span class="no">01</span><h2 class="sec">查阅端首页</h2><span class="badge b">免登录</span><span class="bd badge">路由 /</span></div>
+    <p class="note">全员可浏览搜索。沿用现有页眉居中定稿；右上角登录（域账号或本地账号）后出现「个人区域」入口。数据来自 <code>/api/docs</code> 实时接口，保存即生效。</p>
+    <div class="frame">
+      <div class="frame-bar"><i></i><i></i><i></i><span class="url">/</span><span class="rt">1366 × 自适应</span></div>
+      <div class="screen">
+        <div class="bar"><span class="brand">IT部问题工单共享服务平台</span><div class="search">搜索报错原文 / 单据号 / 关键词</div><span class="sp"></span><span class="lnk">个人区域</span><span class="btn">登录</span></div>
+        <div class="hero"><div class="t">IT部相关系统问题工单共享服务平台</div>
+          <div class="st"><span>问题类型 <b>25</b></span><span>报错截图 <b>39</b></span><span>收录系统 <b>3</b></span><span>问题分类 <b>6</b></span></div></div>
+        <div class="body">
+          <div class="side">
+            <div class="lab">① 系统（工单归属）</div>
+            <div class="it on">全部系统 · 25</div><div class="it">WMS · 16</div><div class="it">ERP · 6</div><div class="it">SRM · 3</div>
+            <div class="lab" style="margin-top:12px">② 问题分类</div>
+            <div class="it on">全部</div><div class="it">采购入库 · 3</div><div class="it">销售出库与CRM · 5</div><div class="it">生产领料与退料 · 5</div>
+          </div>
+          <div class="main-in">
+            <div class="crumb">系统 <b>全部</b> › 分类 <b>全部</b> · 共 25 条</div>
+            <div class="card"><div class="hd"><span class="tag blue">WMS</span><span class="tag green">采购入库</span><span class="q">采购订单同步 ERP 报「仓库编码不存在」</span></div>
+              <div class="a">一句话：基础资料仓库编码未同步，补录后重新触发同步即可。</div>
+              <div class="meta"><span>KW-012</span><span>处理角色：WMS 运维</span><span>已解决</span><span>更新 2026-11-10</span></div></div>
+            <div class="card"><div class="hd"><span class="tag blue">ERP</span><span class="tag orange">权限与配置</span><span class="q">月台权限分配后司机端仍看不到预约入口</span></div>
+              <div class="a">一句话：父子月台授权关系缺失，需在授权页补挂子月台。</div>
+              <div class="meta"><span>KW-003</span><span>处理角色：TMS 运维</span><span>已解决</span><span>更新 2026-11-08</span></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 02 登录 ================= -->
+  <section id="s2">
+    <div class="sec-hd"><span class="no">02</span><h2 class="sec">登录页</h2><span class="badge b">LDAP / 本地</span><span class="bd badge">/login</span></div>
+    <p class="note">双通道登录：正式员工用域账号（首次登录自动建档）；外包/无域账号同事、机器人 service 账号用本地账号。登录成功签发 JWT，跳回来源页。</p>
+    <div class="frame">
+      <div class="frame-bar"><i></i><i></i><i></i><span class="url">/login?redirect=/console</span><span class="rt">居中卡片</span></div>
+      <div class="screen" style="background:#f0f2f5;padding:26px 10px">
+        <div class="login">
+          <div style="font-size:16px;font-weight:600;margin-bottom:4px">登录</div>
+          <div style="font-size:12px;color:#909399;margin-bottom:16px">IT知识共享服务平台</div>
+          <div style="display:flex;border-bottom:1px solid #e4e7ed;margin-bottom:16px">
+            <div style="flex:1;text-align:center;font-size:12.5px;color:#409eff;padding:7px 0;border-bottom:2px solid #409eff;font-weight:500">域账号</div>
+            <div style="flex:1;text-align:center;font-size:12.5px;color:#909399;padding:7px 0">本地账号</div>
+          </div>
+          <div class="fld">域账号（如 wang.jz）</div>
+          <div class="fld">域密码</div>
+          <div class="btn" style="display:block;text-align:center;padding:9px;font-size:13px">登 录</div>
+          <div style="font-size:11px;color:#c0c4cc;margin-top:12px;line-height:1.7">域账号首次登录自动开通（默认只读，管理员可提权）。<br>无域账号的同事请联系管理员创建本地账号。</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 03 工作台 ================= -->
+  <section id="s3">
+    <div class="sec-hd"><span class="no">03</span><h2 class="sec">管理工作台 · 卡片/文档管理</h2><span class="badge g">需登录</span><span class="bd badge">/console/docs</span></div>
+    <p class="note">Element Plus 经典后台布局。表格带更新人/时间；删除为软删除；全部操作写入操作日志。</p>
+    <div class="frame">
+      <div class="frame-bar"><i></i><i></i><i></i><span class="url">/console/docs</span><span class="rt">侧栏 200px + 内容区</span></div>
+      <div class="screen">
+        <div class="body" style="min-height:290px">
+          <div class="menu">
+            <div class="mt">IT知识平台</div>
+            <div class="mb on">问答与文档</div><div class="mb">技术文档</div><div class="mb">业务文档</div><div class="mb">个人区域</div>
+            <div class="mb sep">空间与权限</div><div class="mb">操作日志</div><div class="mb">成员角色</div>
+          </div>
+          <div style="flex:1;min-width:0">
+            <div class="topbar"><span class="bc">首页 / 问答与文档 / 卡片管理</span><span style="flex:1"></span><div class="avatar">王</div><span class="bc">wang.jz · ADMIN</span></div>
+            <div class="stats">
+              <div class="stat b"><div class="l">问答卡</div><div class="v">25</div></div>
+              <div class="stat g"><div class="l">技术文档</div><div class="v">14</div></div>
+              <div class="stat o"><div class="l">待补充</div><div class="v">3</div></div>
+              <div class="stat r"><div class="l">个人草稿</div><div class="v">6</div></div>
+            </div>
+            <div style="padding:0 16px">
+              <div style="display:flex;gap:8px;margin-bottom:8px">
+                <span class="btn">＋ 新建问答卡</span><span class="btn plain">新建 Markdown 文档</span><span class="btn plain">批量导入</span>
+              </div>
+              <table class="tbl">
+                <tr><th style="width:60px">编号</th><th>标题</th><th style="width:76px">归属/空间</th><th style="width:118px">更新人 / 时间</th><th style="width:104px">操作</th></tr>
+                <tr><td>KW-012</td><td>采购订单同步 ERP 报「仓库编码不存在」</td><td><span class="tag blue">WMS</span></td><td>li.ming · 11-10 14:20</td><td class="op"><a>编辑</a><a>版本</a><a class="d">删除</a></td></tr>
+                <tr><td>TD-004</td><td>WMS 与 ERP 接口对接部署手册</td><td><span class="tag green">技术文档</span></td><td>wang.jz · 11-09 09:41</td><td class="op"><a>编辑</a><a>版本</a><a class="d">删除</a></td></tr>
+                <tr><td>KW-025</td><td>财务分类错误（待补充处理方案）</td><td><span class="tag blue">WMS</span></td><td>chen.s · 11-06 16:02</td><td class="op"><a>编辑</a><a>版本</a><a class="d">删除</a></td></tr>
+              </table>
+              <div class="pager"><span>‹</span><span class="on">1</span><span>2</span><span>›</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 04 阅读页 ================= -->
+  <section id="s4">
+    <div class="sec-hd"><span class="no">04</span><h2 class="sec">文档阅读页</h2><span class="badge g">需登录</span><span class="bd badge">/doc/:id</span></div>
+    <p class="note">md-editor-v3 预览模式渲染；右侧自动目录跟随滚动高亮；底部版本记录可回看回滚。</p>
+    <div class="frame">
+      <div class="frame-bar"><i></i><i></i><i></i><span class="url">/doc/TD-004</span><span class="rt">正文 2.2 : 目录 1</span></div>
+      <div class="screen">
+        <div class="body" style="min-height:250px">
+          <div class="main-in" style="flex:2.2">
+            <div style="font-size:17px;font-weight:600;margin-bottom:5px">WMS 与 ERP 接口对接部署手册</div>
+            <div style="font-size:11px;color:#c0c4cc;margin-bottom:14px">技术文档 · TD-004 · 更新人 wang.jz · 2026-11-09 · 版本 v3</div>
+            <div style="font-size:14.5px;font-weight:600;margin-bottom:4px">1. 环境要求</div>
+            <div style="font-size:12.5px;margin:4px 0 12px;color:#5f5e5a">MySQL 8.0 · Docker 24+ · 公司域账号（LDAP 认证）</div>
+            <div style="font-size:14.5px;font-weight:600;margin-bottom:4px">2. 部署步骤</div>
+            <div class="code" style="background:#f5f7fa;border:1px solid #ebeef5;border-radius:6px;padding:8px 11px;margin:6px 0">docker compose up -d</div>
+            <div class="warn">⚠️ 首次启动需先初始化数据库（sql/init.sql）</div>
+            <div style="font-size:14.5px;font-weight:600;margin:12px 0 4px">3. 常见问题</div>
+            <div style="font-size:12.5px;color:#5f5e5a">见问答卡 KW-012、KW-003 ……</div>
+          </div>
+          <div class="side" style="background:#fff;width:196px">
+            <div class="lab">目录</div>
+            <div class="it on">1. 环境要求</div><div class="it">2. 部署步骤</div><div class="it" style="padding-left:20px">2.1 初始化数据库</div><div class="it" style="padding-left:20px">2.2 启动容器</div><div class="it">3. 常见问题</div>
+          </div>
+        </div>
+        <div class="statusbar"><span>版本历史：v1 初始 · v2 补充常见问题 · <b style="color:#409eff">v3 当前</b></span><span style="margin-left:auto"><span class="btn plain">回看</span> <span class="btn">回滚到此版本</span></span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 05 编辑页 ================= -->
+  <section id="s5">
+    <div class="sec-hd"><span class="no">05</span><h2 class="sec">Markdown 编辑页</h2><span class="badge g">需登录</span><span class="bd badge">/doc/:id/edit</span></div>
+    <p class="note">md-editor-v3：粘贴图片自动上传 <code>/api/files</code>；每次保存自动生成版本快照；30s 自动存草稿。工具栏保留加粗/标题/代码块/表格/上传。</p>
+    <div class="frame">
+      <div class="frame-bar"><i></i><i></i><i></i><span class="url">/doc/TD-004/edit</span><span class="rt">左编右预 1 : 1</span></div>
+      <div class="screen">
+        <div class="topbar"><span class="bc">技术文档 / 部署手册 / 编辑</span><span style="flex:1"></span>
+          <span class="btn plain">历史版本 v1 · v2 · v3</span><span class="btn">保存（生成 v4）</span><span class="btn green">发布到公共空间</span></div>
+        <div style="padding:12px 16px;border-bottom:1px solid #e4e7ed;background:#fff">
+          <div class="fld" style="margin:0;width:70%;color:#2c2c2a;font-size:13px;font-weight:500">WMS 与 ERP 接口对接部署手册</div>
+        </div>
+        <div class="editor">
+          <div class="code" style="flex:1;border-right:1px solid #e4e7ed;padding:12px 14px;color:#5f5e5a;background:#fcfcfd">
+            <div style="color:#909399">## 1. 环境要求</div><div>- MySQL 8.0 · Docker 24+</div><div>- 公司域账号（LDAP 认证）</div><div>&nbsp;</div>
+            <div style="color:#909399">## 2. 部署步骤</div><div>```bash</div><div>docker compose up -d</div><div>```</div><div>&nbsp;</div>
+            <div style="color:#909399">&gt; ⚠️ 首次启动需先初始化数据库</div>
+          </div>
+          <div style="flex:1;padding:12px 16px;font-size:12.5px;line-height:1.8">
+            <div style="font-size:14.5px;font-weight:600">1. 环境要求</div>
+            <div style="margin:4px 0 10px;color:#5f5e5a">MySQL 8.0 · Docker 24+　公司域账号（LDAP 认证）</div>
+            <div style="font-size:14.5px;font-weight:600">2. 部署步骤</div>
+            <div class="code" style="background:#f5f7fa;border:1px solid #ebeef5;border-radius:6px;padding:8px 11px;margin:6px 0">docker compose up -d</div>
+            <div class="warn">⚠️ 首次启动需先初始化数据库</div>
+          </div>
+        </div>
+        <div class="statusbar"><span>字数 486</span><span>图片/附件上传</span><span>自动保存草稿 · 30s</span><span style="margin-left:auto">编辑人：wang.jz</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 06 空间权限 ================= -->
+  <section id="s6">
+    <div class="sec-hd"><span class="no">06</span><h2 class="sec">空间与权限管理</h2><span class="badge o">仅 ADMIN</span><span class="bd badge">/console/spaces</span></div>
+    <p class="note">空间映射 LDAP 域组，域控加人自动生效；个人区域为内置空间，权限不可改。二期钉钉群绑定在此扩展 tab 配置。</p>
+    <div class="frame">
+      <div class="frame-bar"><i></i><i></i><i></i><span class="url">/console/spaces</span><span class="rt">列表 + 配置抽屉</span></div>
+      <div class="screen">
+        <div class="topbar"><span class="bc">首页 / 空间与权限</span><span style="flex:1"></span><span class="btn">＋ 新建空间</span></div>
+        <div class="main-in" style="padding:16px 18px">
+          <div class="aclrow"><b style="font-weight:600">技术文档</b><span class="tag blue">PUBLIC</span><span style="color:#909399">可编辑：</span><span class="tag green">LDAP组 IT-DEV</span><span class="tag green">用户 li.ming</span><span style="flex:1"></span><span class="btn plain" style="font-size:11px">配置</span></div>
+          <div class="aclrow"><b style="font-weight:600">业务文档</b><span class="tag blue">PUBLIC</span><span style="color:#909399">可编辑：</span><span class="tag green">LDAP组 BIZ-OPS</span><span style="flex:1"></span><span class="btn plain" style="font-size:11px">配置</span></div>
+          <div class="aclrow"><b style="font-weight:600">问答与文档</b><span class="tag blue">PUBLIC</span><span style="color:#909399">可编辑：</span><span class="tag green">LDAP组 IT-ALL</span><span style="flex:1"></span><span class="btn plain" style="font-size:11px">配置</span></div>
+          <div class="aclrow" style="background:#fafbfc"><b style="font-weight:600">个人区域</b><span class="tag orange">PERSONAL（内置）</span><span style="color:#909399">每人一个，仅本人可见，管理员默认不可见</span><span style="flex:1"></span><span class="tag" style="background:#f4f4f5;color:#909399">不可修改</span></div>
+          <div class="aclrow" style="border-style:dashed"><b style="font-weight:600">钉钉群绑定（二期）</b><span style="color:#909399">群「OTWB 项目群」→ 空间「OTWB 项目」 · 一群一空间 / 多群一空间均支持</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 07 成员管理 ================= -->
+  <section id="s7">
+    <div class="sec-hd"><span class="no">07</span><h2 class="sec">成员管理（域账号 + 本地账号）</h2><span class="badge o">仅 ADMIN</span><span class="bd badge">/console/users</span></div>
+    <p class="note">域账号首次登录自动建档，管理员只需提权；本地账号由管理员创建，用于外包同事、机器人 service 账号、应急管理员。停用即时生效。</p>
+    <div class="frame">
+      <div class="frame-bar"><i></i><i></i><i></i><span class="url">/console/users</span><span class="rt">筛选 + 表格 + 行内操作</span></div>
+      <div class="screen">
+        <div class="topbar"><span class="bc">首页 / 成员角色</span><span style="flex:1"></span>
+          <div style="width:180px;background:#f5f7fa;border-radius:4px;height:24px;display:flex;align-items:center;padding:0 9px;font-size:11px;color:#909399">搜索用户名 / 姓名</div>
+          <span class="btn">＋ 新建本地账号</span></div>
+        <div class="main-in" style="padding:12px 18px 18px">
+          <table class="tbl">
+            <tr><th style="width:112px">用户名</th><th style="width:96px">姓名</th><th style="width:86px">来源</th><th style="width:78px">全局角色</th><th style="width:80px">状态</th><th style="width:100px">最近登录</th><th>操作</th></tr>
+            <tr><td>wang.jz</td><td>王建中</td><td><span class="tag blue">LDAP</span></td><td>ADMIN</td><td><span class="tag green">启用</span></td><td>11-12 10:44</td><td class="op"><a>改角色</a><a class="d">停用</a></td></tr>
+            <tr><td>li.ming</td><td>李明</td><td><span class="tag blue">LDAP</span></td><td>EDITOR</td><td><span class="tag green">启用</span></td><td>11-12 09:41</td><td class="op"><a>改角色</a><a class="d">停用</a></td></tr>
+            <tr><td>vendor01</td><td>外包-张三</td><td><span class="tag orange">LOCAL</span></td><td>EDITOR</td><td><span class="tag green">启用</span></td><td>11-11 17:02</td><td class="op"><a>改角色</a><a>重置密码</a><a class="d">停用</a></td></tr>
+            <tr><td>bot.dingtalk</td><td>钉钉机器人</td><td><span class="tag orange">LOCAL</span></td><td>EDITOR</td><td><span class="tag green">启用</span></td><td>11-12 08:00</td><td class="op"><a>改角色</a><a class="d">停用</a></td></tr>
+            <tr><td>outsider02</td><td>外包-李四</td><td><span class="tag orange">LOCAL</span></td><td>VIEWER</td><td><span class="tag" style="background:#f4f4f5;color:#909399">停用</span></td><td>10-28 15:10</td><td class="op"><a>启用</a></td></tr>
+          </table>
+          <div class="tip" style="margin-top:10px">本地账号密码 BCrypt 存储不可逆；重置后生成临时密码并强制首次改密。用户名不得与已有域账号重名，创建时会校验冲突。</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 08 移动版 ================= -->
+  <section id="s8">
+    <div class="sec-hd"><span class="no">08</span><h2 class="sec">查阅端 · 移动版</h2><span class="badge b">纯只读</span><span class="bd badge">≤768px</span></div>
+    <p class="note">无登录入口、无个人区域、无编辑按钮，只调公开 GET 接口。侧栏筛选改为顶部横向滚动 chip + 筛选抽屉；卡片单列整卡可点；底部 tab 三项。</p>
+    <div class="mob">
+      <div class="phone">
+        <div class="st"><span>9:41</span><span>5G ▮▮▮ 82%</span></div>
+        <div class="mbar"><span style="font-size:12px;font-weight:600;flex:1">IT知识平台</span>
+          <span style="width:26px;height:26px;border-radius:6px;background:#f5f7fa;display:flex;align-items:center;justify-content:center;font-size:12px;color:#5f5e5a">⌕</span>
+          <span style="width:26px;height:26px;border-radius:6px;background:#f5f7fa;display:flex;align-items:center;justify-content:center;font-size:12px;color:#5f5e5a">☰</span></div>
+        <div class="mhero">
+          <div style="flex:1"><div style="color:#fff;font-size:13px;font-weight:600;line-height:1.4">IT部相关系统问题<br>工单共享服务平台</div>
+            <div style="color:#dcecfc;font-size:10px;margin-top:3px">25 条问题 · 39 张截图 · 3 个系统</div></div>
+          <div style="background:rgba(255,255,255,.2);color:#fff;font-size:10px;padding:4px 9px;border-radius:12px;white-space:nowrap">只读浏览</div>
+        </div>
+        <div style="background:#fff;padding:9px 0 7px;border-bottom:1px solid #ebeef5">
+          <div class="chips"><span class="chip on">全部 25</span><span class="chip">WMS 16</span><span class="chip">ERP 6</span><span class="chip">SRM 3</span></div>
+          <div class="chips" style="margin-top:6px"><span class="chip sm" style="border:1px solid #409eff;background:#fff;color:#409eff">分类：全部</span><span class="chip sm">采购入库</span><span class="chip sm">销售出库</span></div>
+        </div>
+        <div style="padding:9px 11px 11px">
+          <div class="mcard">
+            <div style="display:flex;gap:5px;margin-bottom:5px"><span class="tag blue" style="font-size:9px">WMS</span><span class="tag green" style="font-size:9px">采购入库</span></div>
+            <div style="font-size:12.5px;font-weight:600;line-height:1.45;margin-bottom:4px">采购订单同步 ERP 报「仓库编码不存在」</div>
+            <div style="font-size:11px;color:#909399;line-height:1.55">基础资料仓库编码未同步，补录后重新触发同步。</div>
+            <div style="display:flex;gap:8px;font-size:9px;color:#c0c4cc;margin-top:6px"><span>KW-012</span><span>已解决</span><span>11-10</span></div>
+          </div>
+          <div class="mcard">
+            <div style="display:flex;gap:5px;margin-bottom:5px"><span class="tag blue" style="font-size:9px">ERP</span><span class="tag orange" style="font-size:9px">权限与配置</span></div>
+            <div style="font-size:12.5px;font-weight:600;line-height:1.45;margin-bottom:4px">月台权限分配后司机端仍看不到预约入口</div>
+            <div style="font-size:11px;color:#909399;line-height:1.55">父子月台授权关系缺失，需补挂子月台。</div>
+            <div style="display:flex;gap:8px;font-size:9px;color:#c0c4cc;margin-top:6px"><span>KW-003</span><span>已解决</span><span>11-08</span></div>
+          </div>
+        </div>
+        <div class="mtab"><div class="on">● 首页</div><div>⌕ 搜索</div><div>◉ 筛选</div></div>
+      </div>
+
+      <div>
+        <div class="panel" style="margin-bottom:12px">
+          <h3>桌面 → 移动的布局变化</h3>
+          <table class="tbl" style="font-size:11.5px">
+            <tr><th style="width:76px">模块</th><th>桌面</th><th>手机（≤768px）</th></tr>
+            <tr><td style="font-family:inherit">筛选</td><td>左侧竖排两级侧栏</td><td>顶部横滑 chip 两行 + 筛选抽屉</td></tr>
+            <tr><td style="font-family:inherit">页眉</td><td>居中大标题 + 四项统计</td><td>两行标题 + 一行精简统计</td></tr>
+            <tr><td style="font-family:inherit">卡片</td><td>宽卡多列</td><td>单列，整卡可点进详情</td></tr>
+            <tr><td style="font-family:inherit">导航</td><td>顶栏按钮</td><td>底部 tab（首页/搜索/筛选）</td></tr>
+            <tr><td style="font-family:inherit">灯箱</td><td>点击放大</td><td>双指缩放 + 左右滑动切换</td></tr>
+            <tr><td style="font-family:inherit">文档目录</td><td>右侧常驻</td><td>收进顶部抽屉，正文单栏</td></tr>
+          </table>
+        </div>
+        <div class="tip"><b>管理端不做手机适配</b>：窄屏打开后台时提示「请使用电脑」，表格编辑与权限配置在手机上体验差，做出来也是半成品。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 09 日志 ================= -->
+  <section id="s9">
+    <div class="sec-hd"><span class="no">09</span><h2 class="sec">操作日志</h2><span class="badge o">仅 ADMIN</span><span class="bd badge">/console/logs</span></div>
+    <p class="note">回答「谁在什么时候改了什么」；记录改前改后值；可按人 / 文档 / 时间筛选，日志只增不改。</p>
+    <div class="frame">
+      <div class="frame-bar"><i></i><i></i><i></i><span class="url">/console/logs?operator=&amp;docId=</span><span class="rt">只增不改</span></div>
+      <div class="screen">
+        <div class="topbar"><span class="bc">首页 / 操作日志</span></div>
+        <div class="main-in" style="padding:12px 18px 18px">
+          <table class="tbl">
+            <tr><th style="width:120px">时间</th><th style="width:76px">操作人</th><th style="width:68px">类型</th><th>对象</th><th style="width:230px">内容摘要</th></tr>
+            <tr><td>11-12 09:41</td><td>li.ming</td><td><span class="tag orange">UPDATE</span></td><td>KW-012 采购订单同步…</td><td>summary：「未同步」→「补录后重新触发」</td></tr>
+            <tr><td>11-11 16:20</td><td>wang.jz</td><td><span class="tag green">PUBLISH</span></td><td>个人区域 → 技术文档 TD-004</td><td>部署手册 v3 发布</td></tr>
+            <tr><td>11-11 10:05</td><td>chen.s</td><td><span class="tag blue">CREATE</span></td><td>KW-026 新建</td><td>月台叫号无响应（草稿）</td></tr>
+            <tr><td>11-10 18:33</td><td>wang.jz</td><td><span class="tag" style="background:#fef0f0;color:#f56c6c">DELETE</span></td><td>KW-009</td><td>软删除（重复条目，可还原）</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 附录 ================= -->
+  <section id="a1">
+    <div class="sec-hd"><span class="no">A</span><h2 class="sec">移动端适配要点（开发照此做）</h2></div>
+    <div class="panel">
+      <ul class="plain">
+        <li>断点 <b>768px</b>，Vue 侧用 CSS 媒体查询 + 条件渲染共用同一套组件，不另写一套移动页面。</li>
+        <li><b>手机端纯只读</b>——不提供登录、不提供个人区域、不出现任何新建/编辑/删除按钮，也不请求需要鉴权的接口。</li>
+        <li>管理端后台不做手机适配，窄屏提示「请使用电脑」。</li>
+        <li>文档阅读页在手机上目录收进顶部抽屉，正文单栏全宽。</li>
+        <li>触控目标 <b>≥44px</b>，正文字号不小于 12px，辅助信息不小于 10.5px。</li>
+        <li>图片灯箱必须支持双指缩放与左右滑动，否则报错截图在手机上看不清。</li>
+        <li>手机端只调 <b>GET</b> 公开接口（<code>/api/docs</code>、<code>/api/spaces</code> 公共部分），从接口层面杜绝误操作。</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="a2">
+    <div class="sec-hd"><span class="no">B</span><h2 class="sec">设计口径备忘</h2></div>
+    <div class="panel">
+      <ul class="plain">
+        <li>未登录可浏览全部公共空间；写操作一律要求登录。</li>
+        <li>权限按钮显隐<b>只为体验</b>，后端必须二次校验，前端不构成权限边界。</li>
+        <li>个人区域内容<b>管理员默认不可见</b>，审计例外走操作日志。</li>
+        <li>全部写操作进日志并生成版本快照，删除为软删除可还原。</li>
+        <li>二期钉钉机器人收录/推送仅用预留字段与开放 API，<b>不改表结构</b>。</li>
+      </ul>
+    </div>
+  </section>
+
+  <div style="font-size:11px;color:#c0c4cc;text-align:center;padding-top:8px">
+    IT部知识共享服务平台 · 原型图-界面 v1.1 · 2026-11-12 · 共 9 屏
+  </div>
+</main>
+
+<button class="hamb" id="hamb" aria-label="目录">☰</button>
+<script>
+(function () {
+  var links = Array.prototype.slice.call(document.querySelectorAll('.toc-nav a'));
+  var secs = links.map(function (a) { return document.querySelector(a.getAttribute('href')); });
+  var toc = document.getElementById('toc');
+
+  function sync() {
+    var y = window.scrollY + 140, idx = 0;
+    for (var i = 0; i < secs.length; i++) {
+      if (secs[i] && secs[i].offsetTop <= y) idx = i;
+    }
+    links.forEach(function (a, i) { a.classList.toggle('on', i === idx); });
+  }
+  var ticking = false;
+  window.addEventListener('scroll', function () {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(function () { sync(); ticking = false; });
+  }, { passive: true });
+  sync();
+
+  document.getElementById('hamb').addEventListener('click', function () {
+    toc.classList.toggle('open');
+  });
+  links.forEach(function (a) {
+    a.addEventListener('click', function () { toc.classList.remove('open'); });
+  });
+})();
+</script>
+</body>
+</html>

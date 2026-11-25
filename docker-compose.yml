@@ -1,0 +1,110 @@
+# =====================================================================
+# IT 部知识共享服务平台 · 单机部署（约 1000 注册读者 / 约 100 维护者）
+# 拓扑：nginx + app×1 + mysql；文件落宿主机 ./data/files（local 存储）
+# 用法：
+#   cp .env.example .env && vi .env     # 改 DB 密码 / JWT 密钥
+#   bash scripts/deploy.sh              # 或 docker compose up -d --build
+# 发版：docker compose build app web && docker compose up -d
+# 注意：本机未接入 Redis / MinIO；单机 local 文件存储不支持多副本
+# =====================================================================
+name: it-docs
+
+x-logging: &default-logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: itdocs-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${KB_DB_PASSWORD:-root}
+      MYSQL_DATABASE: it_docs
+      TZ: Asia/Shanghai
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_general_ci
+      - --log-bin
+      - --binlog_expire_days=7
+      - --default-authentication-plugin=mysql_native_password
+    volumes:
+      - ./data/mysql:/var/lib/mysql
+      - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      # 走 TCP 并查业务表，避免 init 临时实例（--skip-networking）阶段误判健康
+      test: ["CMD-SHELL", "MYSQL_PWD=\"$$MYSQL_ROOT_PASSWORD\" mysql -h127.0.0.1 -uroot -Nse 'SELECT 1 FROM it_docs.it_space LIMIT 1' >/dev/null 2>&1"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 60s
+    shm_size: 256mb
+    logging: *default-logging
+
+  app:
+    build:
+      context: .
+      dockerfile: docker/it-docs.Dockerfile
+    image: itdocs-app:${KB_IMAGE_TAG:-latest}
+    container_name: itdocs-app
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      KB_DB_HOST: mysql
+      KB_DB_NAME: it_docs
+      KB_DB_USER: root
+      KB_DB_PASSWORD: ${KB_DB_PASSWORD:-root}
+      KB_STORAGE_TYPE: local
+      KB_STORAGE_LOCAL_DIR: /app/data/files
+      KB_JWT_SECRET: ${KB_JWT_SECRET:-change-me-in-env}
+      KB_LDAP_URL: ${KB_LDAP_URL:-}
+      KB_LDAP_BASE_DN: ${KB_LDAP_BASE_DN:-}
+      KB_LDAP_USER_DN_PATTERN: ${KB_LDAP_USER_DN_PATTERN:-uid={0},ou=people}
+      KB_LDAP_UPN_PATTERN: ${KB_LDAP_UPN_PATTERN:-}
+      KB_LDAP_BIND_USER: ${KB_LDAP_BIND_USER:-}
+      KB_LDAP_BIND_PASSWORD: ${KB_LDAP_BIND_PASSWORD:-}
+      JAVA_OPTS: "${KB_JAVA_OPTS:--Xms512m -Xmx1024m -Dfile.encoding=UTF-8}"
+      TZ: Asia/Shanghai
+    volumes:
+      - ./data/files:/app/data/files
+    expose:
+      - "8080"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8080/actuator/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 120s
+    stop_grace_period: 30s
+    logging: *default-logging
+
+  web:
+    build:
+      context: .
+      dockerfile: docker/it-docs-web.Dockerfile
+    image: itdocs-web:${KB_IMAGE_TAG:-latest}
+    container_name: itdocs-web
+    restart: unless-stopped
+    depends_on:
+      app:
+        condition: service_healthy
+    ports:
+      - "${KB_WEB_PORT:-80}:80"
+    environment:
+      TZ: Asia/Shanghai
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1/actuator/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    logging: *default-logging
+
+# 数据目录：
+#   ./data/mysql  MySQL 数据（init.sql 仅在目录为空时执行）
+#   ./data/files  上传的图片/附件（local 存储）
+# 备份：bash scripts/backup.sh（mysqldump + tar data/files）

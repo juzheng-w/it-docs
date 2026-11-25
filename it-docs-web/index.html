@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IT部知识共享服务平台</title>
+  <script>
+    // 主题预置：在 CSS/JS 加载前设置暗色类与主色，避免首屏闪白
+    (function () {
+      try {
+        var m = localStorage.getItem('kb_theme_mode') || 'light'
+        var dark = m === 'dark' || (m === 'auto' && window.matchMedia &&
+          window.matchMedia('(prefers-color-scheme: dark)').matches)
+        var el = document.documentElement
+        el.classList.toggle('dark', dark)
+        el.style.colorScheme = dark ? 'dark' : 'light'
+        var accents = { blue: '#1c64f2', indigo: '#6d5efc', teal: '#0f9d8f', orange: '#e8730c' }
+        var c = accents[localStorage.getItem('kb_theme_accent')] || accents.blue
+        el.style.setProperty('--el-color-primary', c)
+        el.style.setProperty('--kb-primary', c)
+      } catch (e) { /* localStorage 不可用时用默认主题 */ }
+    })()
+  </script>
+</head>
+<body>
+  <div id="app"></div>
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

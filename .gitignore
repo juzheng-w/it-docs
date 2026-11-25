@@ -1,0 +1,24 @@
+# 构建产物
+target/
+node_modules/
+dist/
+.vite/
+
+# 运行时数据（数据库、上传文件、备份）
+data/
+*.log
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# 本地配置：模板 .env.example 需要入库，真实 .env 不入库
+.env
+.env.*
+!.env.example
+
+# 打包产物
+*.zip
+*.tgz
+*.tar.gz

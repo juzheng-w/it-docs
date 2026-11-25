@@ -1,0 +1,81 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: it-docs
+  # springfox 3.0 只认 AntPathMatcher：Boot 2.6+ 默认 PathPatternParser 会让
+  # documentationPluginsBootstrapper 抛 NPE，应用直接起不来
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  datasource:
+    url: jdbc:mysql://${KB_DB_HOST:localhost}:${KB_DB_PORT:3306}/${KB_DB_NAME:it_docs}?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: ${KB_DB_USER:root}
+    password: ${KB_DB_PASSWORD:root}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      connection-timeout: 5000
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 25MB
+  jackson:
+    time-zone: Asia/Shanghai
+    date-format: yyyy-MM-dd HH:mm:ss
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+  global-config:
+    banner: false
+
+itdocs:
+  jwt:
+    secret: ${KB_JWT_SECRET:itdocs-dev-secret-change-me}
+    expire-hours: 12
+  auth:
+    # 免登录放行（"方法:路径"，* 单段、** 多段，其余完全匹配）
+    # 文件只放行 view/download 两个读接口，且由 FileService 二次校验归属文档可读性；
+    # 不要写成 GET:/api/files —— 前缀会连带放行所有子路径
+    public-paths: POST:/api/auth/login,GET:/api/docs,GET:/api/docs/**,GET:/api/spaces,GET:/api/spaces/**,GET:/api/meta,GET:/api/files/*/view,GET:/api/files/*/download,/error
+  storage:
+    # local（单机默认，文件落 base-dir） / minio（多副本可选）
+    type: ${KB_STORAGE_TYPE:local}
+    local:
+      base-dir: ${KB_STORAGE_LOCAL_DIR:./data/files}
+    minio:
+      endpoint: ${KB_MINIO_ENDPOINT:http://localhost:9000}
+      access-key: ${KB_MINIO_ACCESS_KEY:minioadmin}
+      secret-key: ${KB_MINIO_SECRET_KEY:minioadmin}
+      bucket: ${KB_MINIO_BUCKET:itdocs-file}
+  upload:
+    max-bytes: 20971520
+  ldap:
+    # 仅作兜底默认值：管理界面「系统设置」保存后以 it_config 表为准（即生效，无需重启）
+    url: ${KB_LDAP_URL:}
+    base-dn: ${KB_LDAP_BASE_DN:}
+    user-dn-pattern: ${KB_LDAP_USER_DN_PATTERN:}
+    upn-pattern: ${KB_LDAP_UPN_PATTERN:}
+    # 查询账号：「从 AD 导入」搜索域用户用（登录 bind 不用它）
+    bind-user: ${KB_LDAP_BIND_USER:}
+    bind-password: ${KB_LDAP_BIND_PASSWORD:}
+    fail-open: false
+
+logging:
+  level:
+    com.tyeeli.it.docs: info
+
+# 接口文档（Swagger 2 / springfox）：http://localhost:8080/swagger-ui.html ，JSON 在 /v2/api-docs
+# springfox 无 yml 配置项，Docket 在 config/Swagger2Config 里定义
+
+# 拦截器只覆盖 /api/**，actuator 靠这里收敛暴露面：只留 health（容器 healthcheck 用），
+# metrics/info 不对外；health 默认不返回明细
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
